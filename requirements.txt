@@ -1,0 +1,6 @@
+streamlit == 1.22.0
+python == 3.8.0
+pandas == 1.5.3
+plotly == 5.13.0
+pyrebase4 == 4.7.0
+protobuf == 3.20.*

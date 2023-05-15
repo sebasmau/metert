@@ -1,0 +1,6 @@
+[theme]
+base="light"
+primaryColor="#33813f"
+
+[server]
+port = 8501
