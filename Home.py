@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 sttk.set_css_style("style.css")
-#sttk.firebase_login_screen_init()
+sttk.firebase_login_screen_init()
     
 
 
