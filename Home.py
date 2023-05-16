@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 #### add CSS style and hide unneeded streamlit visuals
-with open('dashboard/style.css') as f:
+with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>',unsafe_allow_html=True)
 
 hide_streamlit_style = """
@@ -126,7 +126,7 @@ elif st.session_state['logged_in'] == False and st.session_state['create_account
 ####methods
 
 #####
-st.write("# Welkom op uw MeterT Dashboard! 👋")
+st.title("Welkom op uw MeterT Dashboard! 👋",anchor=False)
 metcol1,metcol2,metcol3 = st.columns(3)
 metcol1.metric("Energie verbruik",f"22 kWh","+2%")
 metcol2.metric("CO2 uitstoot",f"110 g","-25%")
