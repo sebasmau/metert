@@ -79,6 +79,9 @@ def firebase_login_screen_init():
             st.subheader("Account aanmaken",anchor=False)
             email = st.text_input("Emailadres")
             pw = st.text_input("Wachtwoord", type="password")
+            pw_confirm = st.text_input("Bevestig wachtwoord", type="password")
+            accept_terms_and_conditions = st.checkbox("Ik accepteer de [gebruikersvoorwaarden](https://addestino.be/privacy-policy/)")
+            #accept_mail_info = st.checkbox("Ik wil gecontacteerd worden")
             login = st.form_submit_button("Enter",type="primary")
 
         ####button to show login screen instead
@@ -95,6 +98,12 @@ def firebase_login_screen_init():
                 st.stop()
             elif len(pw)<6:
                 st.info("Wachtwoord moet minimaal 7 karakters lang zijn")
+                st.stop()
+            elif pw != pw_confirm:
+                st.info("Er werden 2 verschillende wachtwoorden ingevuld")
+                st.stop()
+            elif accept_terms_and_conditions == False:
+                st.info("Gelieve de gebruikersvoorwaarden te accepteren")
                 st.stop()
             else:
                 try:
