@@ -27,7 +27,7 @@ metcol1.metric("Energie verbruik",f"22 kWh","+2%")
 metcol2.metric("CO2 uitstoot",f"110 g","-25%")
 metcol3.metric("Energie injectie",f"115 kWh", "-13%")
 if st.button("Toon verbruik",type="secondary",use_container_width=True):
-    sttk.nav_page("Verbruik")
+    sttk.navigate_page("Verbruik")
 
 
 

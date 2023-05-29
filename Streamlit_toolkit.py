@@ -38,7 +38,7 @@ def set_css_style(style):
                 """
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-def nav_page(page_name, timeout_secs=3):
+def navigate_page(page_name, timeout_secs=3):
     nav_script = """
         <script type="text/javascript">
             function attempt_nav_page(page_name, start_time, timeout_secs) {
