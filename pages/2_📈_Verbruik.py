@@ -3,6 +3,7 @@ import pyrebase
 import time
 import pandas as pd
 import Streamlit_toolkit as sttk
+from PIL import Image
 
 ####PAGE CONFIG
 
@@ -19,6 +20,8 @@ sttk.firebase_login_screen_init()
 
 
 ###ACTUAL APP
+image = Image.open('artwork/metert logo.png')
+st.image(image,width=50,output_format="PNG")
 
 
 tab1, tab2 = st.tabs(["Fluvius - Digitale meter", "Invencado - Smart Meter"])

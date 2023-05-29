@@ -1,6 +1,30 @@
 ###this is a toolkit of functions to be used by Sébastien Mauroo
 import streamlit as st
 import pyrebase
+from streamlit.components.v1 import html
+
+def firebase_get_db():
+    return st.session_state['firebase'].database()
+
+
+def get_firebase_db_data(*childs):
+    db = st.session_state['firebase'].database()
+    for child in childs:
+         db = db.child(child)         
+    return db.get().val()
+
+
+def set_firebase_db_data(load,*childs):
+    db = st.session_state['firebase'].database()
+    for child in childs:
+         db = db.child(child)         
+    return db.set(load)
+
+@st.cache_data
+def get_userID():
+    return st.session_state['userID']
+
+
 
 def set_css_style(style):
     with open(style) as f:
@@ -79,7 +103,7 @@ def firebase_login_screen_init():
             email = st.text_input("Emailadres")
             pw = st.text_input("Wachtwoord", type="password")
             pw_confirm = st.text_input("Bevestig wachtwoord", type="password")
-            accept_terms_and_conditions = st.checkbox("Ik accepteer de [gebruikersvoorwaarden](https://addestino.be/privacy-policy/)")
+            accept_terms_and_conditions = st.checkbox("Ik accepteer de [gebruikersvoorwaarden](https://1drv.ms/b/s!AkQC5Uz0X-XxgQC3NDi3Od4Z-isp?e=Q2YfGs)")
             #accept_mail_info = st.checkbox("Ik wil gecontacteerd worden")
             login = st.form_submit_button("Enter",type="primary")
 
@@ -107,6 +131,7 @@ def firebase_login_screen_init():
             else:
                 try:
                     signin = st.session_state['firebase'].auth().create_user_with_email_and_password(email,pw)
+                    set_firebase_db_data(accept_terms_and_conditions,"users",signin['localId'],"Accepted terms and conditions")
                     st.session_state['logged_in'] = True
                     st.session_state['password_reset'] = False
                     st.session_state['userID'] = signin['localId']
@@ -116,3 +141,29 @@ def firebase_login_screen_init():
             st.experimental_rerun()
         else:
             st.stop()
+    
+
+def nav_page(page_name, timeout_secs=3):
+    nav_script = """
+        <script type="text/javascript">
+            function attempt_nav_page(page_name, start_time, timeout_secs) {
+                var links = window.parent.document.getElementsByTagName("a");
+                for (var i = 0; i < links.length; i++) {
+                    if (links[i].href.toLowerCase().endsWith("/" + page_name.toLowerCase())) {
+                        links[i].click();
+                        return;
+                    }
+                }
+                var elasped = new Date() - start_time;
+                if (elasped < timeout_secs * 1000) {
+                    setTimeout(attempt_nav_page, 100, page_name, start_time, timeout_secs);
+                } else {
+                    alert("Unable to navigate to page '" + page_name + "' after " + timeout_secs + " second(s).");
+                }
+            }
+            window.addEventListener("load", function() {
+                attempt_nav_page("%s", new Date(), %d);
+            });
+        </script>
+    """ % (page_name, timeout_secs)
+    html(nav_script)

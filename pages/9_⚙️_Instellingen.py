@@ -5,6 +5,20 @@ import time
 import Streamlit_toolkit as sttk
 from PIL import Image
 
+energy_suppliers_info = {'Geen energieleverancier geselecteerd':["Geen contract geselecteerd"],
+                         'Engie Electrabel':["Geen contract geselecteerd","Easy Variabel","Easy Vast","Flow Variabel","Direct Variabel","Dynamic Variabel"],
+                         'Luminus':["Geen contract geselecteerd","ComfyFlex Variabel","Comfy Vast","Comfy+ Vast"],
+                         "Mega":["Geen contract geselecteerd","Cosy Green Flex Variabel","Online Green Flex Variabel","Cosy Green Fixed Vast","Smart Green Flex Variabel","Online Flex Variabel","Group Green Flex Variabel"],
+                         "Total Energies":["Geen contract geselecteerd","Pixel Variabel","Pixel Blue Variabel"],
+                         "Eneco":["Geen contract geselecteerd","Flex Variabel","Vast"],
+                         "Bolt":["Geen contract geselecteerd","Bolt Variabel","Bolt Online Variabel","Bolt Go Variabel"],
+                         "Octa+":["Geen contract geselecteerd","Clear Variabel","Eco Clear Variabel","Dynamic Variabel"],
+                         "Energie.be":["Geen contract geselecteerd","Energie.be Variabel"],
+                         'Andere':[""]
+                         }
+no_supplier_selected = 'Geen energieleverancier geselecteerd'
+no_contract_selected = "Geen contract geselecteerd"
+
 ####PAGE CONFIG
 
 st.set_page_config(
@@ -21,46 +35,72 @@ sttk.firebase_login_screen_init()
 #####
 image = Image.open('artwork/metert logo.png')
 st.image(image,width=50,output_format="PNG")
+
+user_id = sttk.get_userID()
+user_settings = sttk.get_firebase_db_data("users",user_id)
+if user_settings == None:
+    user_settings = {} 
+
+### value = str(x or y) ==> if x is None (False) then y is return (""), if x is string, this string is returned
+
+
 tab1, tab2, tab3 = st.tabs(["Algemene instellingen", "Mijn electriciteits leverancier", "Mijn elektrische installatie"])
 
 
+
 with tab1:
-    st.write("#### Algemene gegevens")
-    st.text_input('Mijn adres',placeholder='Bijvoorbeeld: Koekoekstraat 70, Melle')
-    st.selectbox("Energie audit: details",options=["Normaal","Geef me alle technische details!"])
+    st.subheader("Algemene gegevens",anchor=False)
+    Address = st.text_input('Mijn adres',placeholder='Bijvoorbeeld: Koekoekstraat 70, Melle',value=str(user_settings.get("Address") or ""))
+    Postcode = st.text_input('Postcode',placeholder='9090',value=str(user_settings.get("Postcode") or ""))
 
 
 
 with tab2:
-    st.write("#### Energie leverancier")
-    lev = st.selectbox('Wie is uw huidige energie leverancier',['Engie Electrabel','Luminus',"Mega","Total Energies","Eneco","Bolt",'Ik weet het niet','Andere'])
-    if lev == "Luminus":
-        contract = st.selectbox('Wat is uw huidig contract?',['Afzetterij ECO','Afzetterij Premium'])
 
-    st.select_slider("Bent u tevreden van uw huidige energie leverancier?",['Niet tevreden','Eerder niet tevreden',"Neutraal","Tevreden","Zeer tevreden"],value='Neutraal')
+    ##select the energy sources name terms for the cases where no supplier was selected
+    db_supplier = str(user_settings.get("Energy Supplier") or no_supplier_selected)
+    db_contract = str(user_settings.get("Energy Contract") or no_contract_selected)
 
-    st.write("#### Energie prijs")
-    typetarief = st.selectbox('Heeft u een dag/nacht tarief of een dag tarief',['Dag/Nacht tarief','Dag tarief','Ik weet het niet','Andere'])
 
-    if typetarief == 'Dag/Nacht tarief':
-        st.slider("Dag tarief (€)",min_value=0.0,max_value=1.5,value=0.90)
-        st.slider("Nacht tarief (€)",min_value=0.0,max_value=1.5,value = 0.60)
-        st.slider("Injectie tarief (€)",min_value=0.0,max_value=1.5,value = 0.40)
-    elif typetarief == 'Dag tarief':
-        st.slider("tarief (€)",min_value=0.0,max_value=1.5,value=0.70)
-        st.slider("Injectie tarief (€)",min_value=0.0,max_value=1.5,value = 0.40)
+    #show on streamlit app
+    st.subheader("Mijn energie leverancier",anchor=False)
+    Energy_supplier = st.selectbox('Wie is uw huidige energie leverancier',list(energy_suppliers_info.keys()),index=list(energy_suppliers_info.keys()).index(db_supplier))
+    
+    if Energy_supplier != no_contract_selected: ##only show if supplier was shown
+        Energy_contract = st.selectbox('Wat is uw huidig contract?',energy_suppliers_info[Energy_supplier],index=energy_suppliers_info[db_supplier].index(db_contract))
+
 
 with tab3:
-    st.write("#### Zonnepanelen")
-    zonp = st.selectbox('Heeft u zonnepanelen',['Ik heb geen zonnepanelen','Ik heb zonnepanelen','ik wil graag zonnepanelen'])
-    if zonp == 'Ik heb zonnepanelen':
-        st.number_input('Aantal zonnepanelen', 0,20)
-        st.slider('Vermogen per zonnepaneel (Wp)',200,500,step=10,value=350)
+    
+    st.subheader("Mijn elektrische toestellen",anchor=False)
+    Fridges = st.number_input("Aantal frigo's",help="Hoeveel frigo's heb je?",min_value=0,max_value=6,value=(user_settings.get("Fridges") or 0))
+    Freezers = st.number_input("Aantal diepvriezers",help="Hoeveel diepvriezers heb je?",min_value=0,max_value=6,value=(user_settings.get("Freezers") or 0))
+    Washing_Machines = st.number_input("Aantal wasmachines",help="Heb je een wasmachine?",min_value=0,max_value=2,value=(user_settings.get("Washing Machine") or 0))
+    Drying_Machines = st.number_input("Aantal droogkasten",help="Heb je een droogkast?",min_value=0,max_value=2,value=(user_settings.get("Drying Machine") or 0))
+    Electric_Cars = st.number_input("Aantal elektrische wagens",help="Heb je een elektrische wagen?",min_value=0,max_value=6,value=(user_settings.get("Electric Cars") or 0))
+    
+    
+    st.subheader("Mijn hernieuwbare energie installatie",anchor=False)
+    Solar_Panels = st.number_input("Aantal zonnepanelen",help="Het gemiddelde zonnepaneel heeft een capaciteit van 350W",min_value=0,max_value=100,value=(user_settings.get("Solar Panels") or 0))
+    Battery_Capacity = st.number_input("Thuisbatterij capaciteit (kWh)",help="Vul hier de capaciteit in van je thuisbatterij indien je er 1 hebt",min_value=0.0,max_value=100.0,step=0.5,value=(user_settings.get("Battery Capacity") or 0.0))
 
-    st.write("#### Thuisbatterij")
-    zonp = st.selectbox('Heeft u een thuisbatterij',['Ik heb geen thuisbatterij','Ik heb een thuisbatterij','ik wil graag een thuisbatterij'])
+if st.button("Gegevens opslaan"):
+        user_settings["Address"] = Address
+        user_settings["Postcode"] = Postcode
 
-if st.button("Gegevens opslaan"): 
-    #with open('users.yaml', 'w') as f:
-    #data = yaml.dump(config, f)
-    st.balloons()
+        user_settings["Energy Supplier"] = Energy_supplier
+        user_settings["Energy Contract"] = Energy_contract
+
+        user_settings["Solar Panels"] = Solar_Panels
+        user_settings["Battery Capacity"] = Battery_Capacity
+
+        user_settings["Washing Machines"] = Washing_Machines
+        user_settings["Drying Machines"] = Drying_Machines
+        user_settings["Electric Cars"] = Electric_Cars
+        user_settings["Fridges"] = Fridges
+        user_settings["Freezers"] = Freezers
+        sttk.set_firebase_db_data(user_settings,"users",user_id)
+        st.balloons()
+
+st.divider()
+st.markdown("💡 We vragen deze informatie een beter zicht te krijgen op hoe jouw energieverbruik er uit ziet,   \nop deze manier kunnen we op basis van jouw elektrische apparaten nog beter advies geven")

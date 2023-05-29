@@ -26,13 +26,8 @@ metcol1,metcol2,metcol3 = st.columns(3)
 metcol1.metric("Energie verbruik",f"22 kWh","+2%")
 metcol2.metric("CO2 uitstoot",f"110 g","-25%")
 metcol3.metric("Energie injectie",f"115 kWh", "-13%")
-st.write("test")
-
-
-
-
-
-st.text_area("",key="usage",disabled=True,height=75,placeholder="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+if st.button("Toon verbruik",type="secondary",use_container_width=True):
+    sttk.nav_page("Verbruik")
 
 
 

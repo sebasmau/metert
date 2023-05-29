@@ -5,6 +5,7 @@ import webbrowser
 import altair as alt
 import pandas as pd
 import Streamlit_toolkit as sttk
+from PIL import Image
 
 ####PAGE CONFIG
 
@@ -21,7 +22,8 @@ sttk.firebase_login_screen_init()
 
 
 ###ACTUAL APP
-
+image = Image.open('artwork/metert logo.png')
+st.image(image,width=50,output_format="PNG")
 
 def solarpanels(fixed_investment,variable_investment,price_high,price_low,self_consumption,kWh_year_solarpanel,CO2_kWh):
     years = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
@@ -121,7 +123,8 @@ def day_night_meter(day_price,night_price,day_night_price,day_usage,night_usage,
 
             dnmetercol2.altair_chart(day_night_graph,theme=None,use_container_width=True)
     
-    
-st.write("#### Top besparingstips voor jou")
+st.subheader("Top besparingstips voor jou",anchor=False)
 solarpanels(2130,422,0.5,0.3,0.3,293,300)
 day_night_meter(0.5,0.3,0.4,4000,4500,20)
+
+st.info("Wij bouwen volop verder aan MeterT om verder energie advies te kunnen geven, binnenkort bekijken we ook als volgende zaken voordelig zijn voor jou; energiedelen, EMS systemen, slimme boilers, dynamische energietarieven, slimme batterijen, nieuwe energiecontracten,...",icon="🏗️")
