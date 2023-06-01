@@ -20,7 +20,6 @@ def set_firebase_db_data(load,*childs):
          db = db.child(child)         
     return db.set(load)
 
-@st.cache_data
 def get_userID():
     return st.session_state['userID']
 
@@ -34,6 +33,7 @@ def set_css_style(style):
                 <style>
                 #MainMenu {visibility: hidden;}
                 footer {visibility: hidden;}
+                header {visibility: hidden;}
                 </style>
                 """
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)

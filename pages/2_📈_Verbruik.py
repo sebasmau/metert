@@ -86,8 +86,9 @@ with tab1:
 
 
         #write to database
-        st.session_state['firebase'].database().child("fluvius_data").child(EAN_data['EAN_code']).set(EAN_data)
-        st.session_state['firebase'].database().child("user").child(st.session_state['userID']).child('EAN').set({EAN_data['EAN_code']:EAN_data['EAN_code']})
+        sttk.set_firebase_db_data(EAN_data,"fluvius_data",EAN_data['EAN_code'])
+        sttk.set_firebase_db_data(EAN_data['EAN_code'],"users",sttk.get_userID(),"EAN_code")
+        sttk.set_firebase_db_data(True,"users",sttk.get_userID(),"Uploaded fluvius file")
         
 
     @st.cache_data(show_spinner="Analyseren hoe je geld kan besparen...")
@@ -100,7 +101,7 @@ with tab1:
 
     ####actual app
 
-    uploaded_file = st.file_uploader("Plaats hier je Fluvius verbruik bestand",accept_multiple_files=False,type=["csv"])
+    uploaded_file = st.file_uploader("Plaats hier je Fluvius verbruik bestand",accept_multiple_files=False,type=["csv"],help="Je kan je verbruik vinden op de website van [Fluvius](https://www.fluvius.be/nl/thema/meters-en-meterstanden/digitale-meter/hoe-mijn-energieverbruik-online-raadplegen) ")
 
 
     ##initialize data upload
