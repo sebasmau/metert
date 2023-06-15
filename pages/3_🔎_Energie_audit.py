@@ -125,6 +125,6 @@ def day_night_meter(day_price,night_price,day_night_price,day_usage,night_usage,
     
 st.subheader("Top besparingstips voor jou",anchor=False)
 solarpanels(2130,422,0.5,0.3,0.3,293,300)
-day_night_meter(0.5,0.3,0.4,4000,4500,20)
+day_night_meter(0.134,0.113,0.127,126,80.2,30)
 
 st.info("Wij bouwen volop verder aan MeterT om verder energie advies te kunnen geven, binnenkort bekijken we ook als volgende zaken voordelig zijn voor jou; energiedelen, EMS systemen, slimme boilers, dynamische energietarieven, slimme batterijen, nieuwe energiecontracten,...",icon="🏗️")

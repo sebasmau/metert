@@ -17,10 +17,14 @@ energy_suppliers_info = {'Geen energieleverancier geselecteerd':["Geen contract 
                          'Andere':[""]
                          }
 meter_types = ["Geen meter type geselecteerd","Dag/nacht teller","Dag teller","Uitsluitend nacht teller","budget teller"]
+heating_types = ["Geen verwarming type geselecteerd","Gasboiler","Warmtepomp","Stookolie","Elektrische verwarming","Accumulatie verwarming","Houtkachel","Andere"]
+cooling_types = ["Geen koeling type geselecteerd","Airco","Warmtepomp met koelfunctie","Andere","Geen koeling"]
                          
 no_supplier_selected = 'Geen energieleverancier geselecteerd'
 no_contract_selected = "Geen contract geselecteerd"
 no_meter_type_selected = "Geen meter type geselecteerd"
+no_heating_type_selected = "Geen verwarming type geselecteerd"
+no_cooling_type_selected = "Geen koeling type geselecteerd"
 
 ####PAGE CONFIG
 
@@ -83,7 +87,13 @@ with tab3:
     Drying_Machines = st.number_input("Aantal droogkasten",help="Heb je een droogkast?",min_value=0,max_value=2,value=(user_settings.get("Drying Machines") or 0))
     Electric_Cars = st.number_input("Aantal elektrische wagens",help="Heb je een elektrische wagen?",min_value=0,max_value=6,value=(user_settings.get("Electric Cars") or 0))
     
-    
+    st.subheader("Mijn verwarming",anchor=False)
+    db_heating_type = str(user_settings.get("Heating type") or no_heating_type_selected)
+    heating_type = st.selectbox('Hoe verwarm je je huis?',heating_types,index=heating_types.index(db_heating_type))
+
+    db_cooling_type = str(user_settings.get("Cooling type") or no_cooling_type_selected)
+    cooling_type = st.selectbox('Hoe koel je je huis?',cooling_types,index=cooling_types.index(db_cooling_type))
+
     st.subheader("Mijn hernieuwbare energie installatie",anchor=False)
     Solar_Panels = st.number_input("Aantal zonnepanelen",help="Het gemiddelde zonnepaneel heeft een capaciteit van 350W",min_value=0,max_value=100,value=(user_settings.get("Solar Panels") or 0))
     Battery_Capacity = st.number_input("Thuisbatterij capaciteit (kWh)",help="Vul hier de capaciteit in van je thuisbatterij indien je er 1 hebt",min_value=0.0,max_value=100.0,step=0.5,value=(user_settings.get("Battery Capacity") or 0.0))
@@ -106,6 +116,10 @@ if st.button("Gegevens opslaan",type='primary'):
         user_settings["Electric Cars"] = Electric_Cars
         user_settings["Fridges"] = Fridges
         user_settings["Freezers"] = Freezers
+
+        user_settings["Heating type"] = heating_type
+        user_settings["Cooling type"] = cooling_type
+
         sttk.set_firebase_db_data(user_settings,"users",user_id)
         st.balloons()
 
